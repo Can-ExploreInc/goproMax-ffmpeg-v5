@@ -206,7 +206,10 @@ const sampler_t sampler = (CLK_NORMALIZED_COORDS_FALSE |
                            CLK_ADDRESS_CLAMP_TO_EDGE   |
                            CLK_FILTER_NEAREST);
 
-int2 transpose_gopromax_overlap(int2 xy, int2 dim)
+int2 transpose_gopromax_overlap(int2 xy, 
+                                int2 dim,
+                                int alpha_adj_x,
+                                int alpha_adj_y)
 {
     int2 ret;
     int cut = dim.x*CUT/BASESIZE;
@@ -217,19 +220,22 @@ int2 transpose_gopromax_overlap(int2 xy, int2 dim)
         }
     else if ((xy.x>=cut) && (xy.x< (dim.x-cut)))
         {
-            ret.x = xy.x+overlap;
-            ret.y = xy.y;
+            ret.x = (xy.x+overlap) * alpha_adj_x;
+            ret.y = xy.y * alpha_adj_y;
         }
     else
         {
-            ret.x = xy.x+2*overlap;
-            ret.y = xy.y;
+            ret.x = (xy.x+2*overlap) * alpha_adj_x;
+            ret.y = xy.y * alpha_adj_y;
         }
     return ret;
 }
 __kernel void gopromax_equirectangular(__write_only image2d_t dst,
                              __read_only  image2d_t gopromax_front,
-                             __read_only  image2d_t gopromax_rear)
+                             __read_only  image2d_t gopromax_rear,
+                             __read_only  image2d_t alpha,
+                             int alpha_adj_x,
+                             int alpha_adj_y)
 {
     
     float4 val;
@@ -247,7 +253,7 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
     
     int2 xy = convert_int2(floor(uv));
 
-    xy = transpose_gopromax_overlap(xy,eac_size);
+    xy = transpose_gopromax_overlap(xy,eac_size,alpha_adj_x,alpha_adj_y);
     
     if (xy.y<half_eight)
         {
