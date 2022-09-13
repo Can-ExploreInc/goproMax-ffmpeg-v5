@@ -218,8 +218,8 @@ int2 transpose_gopromax_overlap(int2 xy,
         }
     else if ((xy.x>=cut) && (xy.x< (dim.x-cut)))
         {
-            ret.x = (xy.x+overlap) * 0;
-            ret.y = xy.y * 0;
+            ret.x = (xy.x+overlap);
+            ret.y = xy.y;
         }
     else
         {
