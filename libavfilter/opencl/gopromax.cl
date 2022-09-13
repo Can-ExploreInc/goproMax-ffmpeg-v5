@@ -53,7 +53,7 @@ enum Rotation {
 };
 
 float2 rotate_cube_face(float2 uv, int rotation);
-int2 transpose_gopromax_overlap(int2 xy, int2 dim);
+int2 transpose_gopromax_overlap(int2 xy, int2 dim, int alpha_adj_x, int alpha_adj_y);
 float3 equirect_to_xyz(int2 xy,int2 size);
 float2 xyz_to_cube(float3 xyz, int *direction, int *face);
 float2 xyz_to_eac(float3 xyz, int2 size);
