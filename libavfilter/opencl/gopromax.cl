@@ -53,7 +53,7 @@ enum Rotation {
 };
 
 float2 rotate_cube_face(float2 uv, int rotation);
-int2 transpose_gopromax_overlap(int2 xy, int2 dim, int alpha_adj_x, int alpha_adj_y);
+int2 transpose_gopromax_overlap(int2 xy, int2 dim);
 float3 equirect_to_xyz(int2 xy,int2 size);
 float2 xyz_to_cube(float3 xyz, int *direction, int *face);
 float2 xyz_to_eac(float3 xyz, int2 size);
@@ -207,9 +207,7 @@ const sampler_t sampler = (CLK_NORMALIZED_COORDS_FALSE |
                            CLK_FILTER_NEAREST);
 
 int2 transpose_gopromax_overlap(int2 xy, 
-                                int2 dim,
-                                int alpha_adj_x,
-                                int alpha_adj_y)
+                                int2 dim)
 {
     int2 ret;
     int cut = dim.x*CUT/BASESIZE;
@@ -220,22 +218,19 @@ int2 transpose_gopromax_overlap(int2 xy,
         }
     else if ((xy.x>=cut) && (xy.x< (dim.x-cut)))
         {
-            ret.x = (xy.x+overlap) * alpha_adj_x;
-            ret.y = xy.y * alpha_adj_y;
+            ret.x = (xy.x+overlap) * 0;
+            ret.y = xy.y * 0;
         }
     else
         {
-            ret.x = (xy.x+2*overlap) * alpha_adj_x;
-            ret.y = xy.y * alpha_adj_y;
+            ret.x = (xy.x+2*overlap) * 0;
+            ret.y = xy.y * 0;
         }
     return ret;
 }
 __kernel void gopromax_equirectangular(__write_only image2d_t dst,
                              __read_only  image2d_t gopromax_front,
-                             __read_only  image2d_t gopromax_rear,
-                             __read_only  image2d_t alpha,
-                             int alpha_adj_x,
-                             int alpha_adj_y)
+                             __read_only  image2d_t gopromax_rear)
 {
     
     float4 val;
@@ -253,7 +248,7 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
     
     int2 xy = convert_int2(floor(uv));
 
-    xy = transpose_gopromax_overlap(xy,eac_size,alpha_adj_x,alpha_adj_y);
+    xy = transpose_gopromax_overlap(xy,eac_size);
     
     if (xy.y<half_eight)
         {
