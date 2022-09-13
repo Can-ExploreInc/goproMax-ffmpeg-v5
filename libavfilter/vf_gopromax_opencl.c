@@ -173,12 +173,12 @@ static int gopromax_opencl_stack(FFFrameSync *fs)
         CL_SET_KERNEL_ARG(ctx->kernel, kernel_arg, cl_mem, &mem);
         kernel_arg++;
 
-        mem = (cl_mem)plane == 0 ? 1 : ctx->x_subsample;
-        CL_SET_KERNEL_ARG(ctx->kernel, kernel_arg, cl_mem, &mem);
+        cl_int alpha_adj_x = plane == 0 ? 1 : ctx->x_subsample;
+        CL_SET_KERNEL_ARG(ctx->kernel, kernel_arg, cl_int, &alpha_adj_x);
         kernel_arg++;
 
-        mem = (cl_mem)plane == 0 ? 1 : ctx->y_subsample;
-        CL_SET_KERNEL_ARG(ctx->kernel, kernel_arg, cl_mem, &mem);
+        cl_int alpha_adj_y = plane == 0 ? 1 : ctx->y_subsample;
+        CL_SET_KERNEL_ARG(ctx->kernel, kernel_arg, cl_int, &alpha_adj_y);
         kernel_arg++;
 
         err = ff_opencl_filter_work_size_from_image(avctx, global_work,
