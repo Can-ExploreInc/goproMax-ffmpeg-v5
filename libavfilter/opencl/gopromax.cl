@@ -255,7 +255,7 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
         if ((loc.x > 384 - 32) && (loc.x < 384)) 
         {
             val2 = read_imagef(gopromax_front,sampler,(int2)(xy.x + 32, xy.y));
-            val = mix(val, val2, 1);
+            val = mix(val, val2, 1.0f);
         }
     }
     else
@@ -265,7 +265,7 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
         if ((loc.x > 384 - 32) && (loc.x < 384)) 
         {
             val2 = read_imagef(gopromax_rear,sampler,(int2)(xy.x + 32, xy.y));
-            val = mix(val, val2, 1);
+            val = mix(val, val2, 1.0f);
         }
     }
 
