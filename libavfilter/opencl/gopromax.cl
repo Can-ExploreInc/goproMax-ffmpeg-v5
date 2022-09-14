@@ -231,6 +231,7 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
                              __read_only  image2d_t gopromax_rear)
 {
     float4 val;
+    float4 val2;
     int2 loc = (int2)(get_global_id(0), get_global_id(1));
 
     int2 dst_size = get_image_dim(dst);
