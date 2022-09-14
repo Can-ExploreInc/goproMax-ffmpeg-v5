@@ -256,7 +256,7 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
         int overlap = dim.x*OVERLAP/BASESIZE;
         if (xy.x<cut)
         {
-            //
+            // val = (float4)(0,0,0,0);
         }
         else if ((xy.x>=cut) && (xy.x< (dim.x-cut)))
         {
@@ -270,6 +270,21 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
     else
     {
         val = read_imagef(gopromax_rear,sampler,(int2)(xy.x, (xy.y-half_height)));
+        int2 dim = eac_size;
+        int cut = dim.x*CUT/BASESIZE;
+        int overlap = dim.x*OVERLAP/BASESIZE;
+        if (xy.x<cut)
+        {
+            // val = (float4)(0,0,0,0);
+        }
+        else if ((xy.x>=cut) && (xy.x< (dim.x-cut)))
+        {
+            val = (float4)(1,1,1,1);
+        }
+        else
+        {
+            //
+        }
     }
 
     // ici
