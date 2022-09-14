@@ -18,10 +18,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#define OVERLAP 64
-#define CUT 688
-#define BASESIZE 4096 //OVERLAP and CUT are based on this size
+// #define OVERLAP 64
+// #define CUT 688
+// #define BASESIZE 4096 //OVERLAP and CUT are based on this size
 
+#define OVERLAP 36
+#define CUT 382
+#define BASESIZE 2272 //OVERLAP and CUT are based on this size
 
 #define FOV 360.0f
 enum Faces {
