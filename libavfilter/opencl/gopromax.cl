@@ -252,9 +252,9 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
     {
         val = read_imagef(gopromax_front,sampler,xy);
 
-        if ((loc.x > 384 - 32) && (loc.x < 384)) 
+        if ((loc.x > src_size.x - 32) && (loc.x < src_size.x)) 
         {
-            val2 = read_imagef(gopromax_front,sampler,(int2)(xy.x + 32, xy.y));
+            val2 = read_imagef(gopromax_rear,sampler,(int2)(xy.x, (xy.y-half_height)));
             val = mix(val, val2, 1.0f);
         }
     }
@@ -262,9 +262,9 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
     {
         val = read_imagef(gopromax_rear,sampler,(int2)(xy.x, (xy.y-half_height)));
 
-        if ((loc.x > 384 - 32) && (loc.x < 384)) 
+        if ((loc.x > src_size.x - 32) && (loc.x < src_size.x)) 
         {
-            val2 = read_imagef(gopromax_rear,sampler,(int2)(xy.x + 32, xy.y));
+            val2 = read_imagef(gopromax_front,sampler,xy);
             val = mix(val, val2, 1.0f);
         }
     }
