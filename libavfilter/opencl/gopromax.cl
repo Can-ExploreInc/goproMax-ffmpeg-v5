@@ -206,8 +206,7 @@ const sampler_t sampler = (CLK_NORMALIZED_COORDS_FALSE |
                            CLK_ADDRESS_CLAMP_TO_EDGE   |
                            CLK_FILTER_NEAREST);
 
-int2 transpose_gopromax_overlap(int2 xy, 
-                                int2 dim)
+int2 transpose_gopromax_overlap(int2 xy, int2 dim)
 {
     int2 ret;
     int cut = dim.x*CUT/BASESIZE;
@@ -218,13 +217,13 @@ int2 transpose_gopromax_overlap(int2 xy,
         }
     else if ((xy.x>=cut) && (xy.x< (dim.x-cut)))
         {
-            ret.x = (xy.x+overlap);
+            ret.x = xy.x+overlap;
             ret.y = xy.y;
         }
     else
         {
-            ret.x = (xy.x+2*overlap) * 0;
-            ret.y = xy.y * 0;
+            ret.x = xy.x+2*overlap;
+            ret.y = xy.y;
         }
     return ret;
 }
@@ -232,7 +231,6 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
                              __read_only  image2d_t gopromax_front,
                              __read_only  image2d_t gopromax_rear)
 {
-    
     float4 val;
     int2 loc = (int2)(get_global_id(0), get_global_id(1));
 
@@ -240,7 +238,7 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
     int2 src_size = get_image_dim(gopromax_front);
     int2 eac_size = (int2)(src_size.x-2*(src_size.x*OVERLAP/BASESIZE),dst_size.y);
 
-    int half_eight = src_size.y;
+    int half_height = src_size.y;
     
     float3 xyz = equirect_to_xyz(loc,dst_size);
 
@@ -250,17 +248,32 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
 
     xy = transpose_gopromax_overlap(xy,eac_size);
     
-    if (xy.y<half_eight)
+    if (xy.y<half_height)
+    {
+        val = read_imagef(gopromax_front,sampler,xy);
+        int cut = dim.x*CUT/BASESIZE;
+        int overlap = dim.x*OVERLAP/BASESIZE;
+        if (xy.x<cut)
         {
-            val = read_imagef(gopromax_front,sampler,xy);
+            //
         }
+        else if ((xy.x>=cut) && (xy.x< (dim.x-cut)))
+        {
+            val = (float4)(0,0,0,0)
+        }
+        else
+        {
+            //
+        }
+    }
     else
-        {
-            val = read_imagef(gopromax_rear,sampler,(int2)(xy.x, (xy.y-half_eight)));
-        }
+    {
+        val = read_imagef(gopromax_rear,sampler,(int2)(xy.x, (xy.y-half_height)));
+    }
+
+    // ici
 
     write_imagef(dst, loc, val);
-
 }
 
 __kernel void gopromax_stack(__write_only image2d_t dst,
