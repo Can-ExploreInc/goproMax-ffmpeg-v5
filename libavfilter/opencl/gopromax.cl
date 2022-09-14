@@ -259,7 +259,7 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
         }
         else if ((xy.x>=cut) && (xy.x< (dim.x-cut)))
         {
-            val = (float4)(0,0,0,0)
+            val = (float4)(0,0,0,0);
         }
         else
         {
