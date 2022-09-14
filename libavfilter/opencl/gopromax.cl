@@ -251,6 +251,7 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
     if (xy.y<half_height)
     {
         val = read_imagef(gopromax_front,sampler,xy);
+        int2 dim = eac_size;
         int cut = dim.x*CUT/BASESIZE;
         int overlap = dim.x*OVERLAP/BASESIZE;
         if (xy.x<cut)
