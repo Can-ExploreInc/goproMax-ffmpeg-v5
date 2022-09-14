@@ -255,19 +255,19 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
     {
         val = read_imagef(gopromax_front,sampler,xy);
 
-        if (xy.x < OVERLAP) 
-        {
-            val = (float4)(0,0,0,1);
-        }
+        // if (xy.x < OVERLAP) 
+        // {
+        //     val = (float4)(0,0,0,1);
+        // }
     }
     else
     {
         val = read_imagef(gopromax_rear,sampler,(int2)(xy.x, (xy.y-half_height)));
 
-        if (xy.x < OVERLAP) 
-        {
-            val = (float4)(1,1,1,1);
-        }
+        // if (xy.x < OVERLAP) 
+        // {
+        //     val = (float4)(1,1,1,1);
+        // }
     }
 
     write_imagef(dst, loc, val);
