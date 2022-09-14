@@ -18,13 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-// #define OVERLAP 64
-// #define CUT 688
-// #define BASESIZE 4096 //OVERLAP and CUT are based on this size
-
 #define OVERLAP 64
-#define CUT 384
-#define BASESIZE 2272 //OVERLAP and CUT are based on this size
+#define CUT 688
+#define BASESIZE 4096 //OVERLAP and CUT are based on this size
 
 #define FOV 360.0f
 enum Faces {
@@ -255,19 +251,19 @@ __kernel void gopromax_equirectangular(__write_only image2d_t dst,
     {
         val = read_imagef(gopromax_front,sampler,xy);
 
-        // if (xy.x < OVERLAP) 
-        // {
-        //     val = (float4)(0,0,0,1);
-        // }
+        if ((loc.x > 384 - 32) && (loc.x < 384 + 32)) 
+        {
+            val = (float4)(0,0,0,1);
+        }
     }
     else
     {
         val = read_imagef(gopromax_rear,sampler,(int2)(xy.x, (xy.y-half_height)));
 
-        // if (xy.x < OVERLAP) 
-        // {
-        //     val = (float4)(1,1,1,1);
-        // }
+        if ((loc.x > 384 - 32) && (loc.x < 384 + 32)) 
+        {
+            val = (float4)(1,1,1,1);
+        }
     }
 
     write_imagef(dst, loc, val);
